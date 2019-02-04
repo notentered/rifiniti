@@ -2,7 +2,7 @@ module Types
   class QueryType < Types::BaseObject
     description "root query"
 
-    field :users, [UserType], null: true do
+    field :users, [UserType, null: true], null: true do
       description "gets all users"
     end
 
