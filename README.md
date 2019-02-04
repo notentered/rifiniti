@@ -1,24 +1,103 @@
-# README
+# Example GraphQL
+For the sake of the purpose the schema is quite minimalistic. E.g. User model has single attribute - id.
+There are some seed data (seeds.rb) in order to start playing. No authentication is implemented but there is
+current_user hardcoded in graphql_controller.rb.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Docker
+Minimalistic docker-compose is implemented for convenience. Please, keep in mind that there is no gems or data
+persistence set, so if you do
+```bash
+$ docker-compose down
+```  
+you will lose the database and will need to recreate it.
 
-Things you may want to cover:
+### Sartup the project
 
-* Ruby version
+```bash
+git clone PROJECT
+```
 
-* System dependencies
+```bash
+cd PROJECT
+```
 
-* Configuration
+```bash
+docker-compose build
+```
 
-* Database creation
+```bash
+docker-compose run app rails db:setup
+```
 
-* Database initialization
+```bash
+docker-compose up
+```
 
-* How to run the test suite
+Open GraphiQL via http://localhost:3000/graphiql 
 
-* Services (job queues, cache servers, search engines, etc.)
+## Example queries
+```graphql
+query {
+  users {
+    id
+    posts {
+      id
+      comments {
+        id
+        message
+        user {
+          id
+        }
+        likes {
+          id
+        }
+      }
+    }
+  }
+}
+```  
 
-* Deployment instructions
+```graphql
+mutation createComment($postId: Int!, $message: String!) {
+  createComment(postId: $postId, message: $message) {
+    comment {
+      id
+      message
+      user {
+        id
+      }
+    }
+    errors 
+  }
+}
 
-* ...
+with query variables
+{
+  "postId": 1,
+  "message": "Test comment 1"
+}
+```
+
+```graphql
+mutation likeComment($commentId: Int!) {
+  likeComment(commentId: $commentId) {
+    comment {
+      id
+      message
+      user {
+        id
+      }
+      likes {
+        id
+      }
+    }
+    errors 
+  }
+}
+
+with query variables
+{
+  "commentId": 1
+}
+
+```
