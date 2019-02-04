@@ -4,8 +4,9 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      # Query context goes here, for example:
-      # current_user: current_user,
+      # For the sake of this example we are not implementing any authentication.
+      # So, just as an example for context, current_user is hardcoded
+      current_user: User.first,
     }
     result = AppSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
